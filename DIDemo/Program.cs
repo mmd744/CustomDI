@@ -7,7 +7,7 @@ namespace DIDemo
     {
         static void Main(string[] args)
         {
-            var container = DIContainer.GenerateContainer();
+            var container = DIContainer.Instance;
             container.RegisterTransient<ICountryService, CountryService>();
 
 
