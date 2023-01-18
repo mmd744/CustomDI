@@ -1,38 +1,36 @@
-﻿using System;
+﻿using DIDemo.TypesToTest;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DIDemo
 {
-    class Program
+    internal class Program
     {
         static void Main(string[] args)
         {
-            var container = DIContainer.GenerateContainer();
-            container.RegisterTransient<ICountryService, CountryService>();
-
-
-            var countryService = ServiceCollection.GetService<CountryService>();
-
-            foreach(var country in countryService.GetCountriesList())
+            try
             {
-                Console.WriteLine(country);
+                var container = DIContainer.CreateContainer();
+                container.Register<ICountryService, CountryService>(LifeTime.Singleton);
+                container.Register<ISomeService, SomeService>(LifeTime.Transient);
+
+                var countryService1 = container.Resolve<ICountryService>();
+                Console.WriteLine(countryService1.GetHashCode());
+                var countryService2 = container.Resolve<ICountryService>();
+                Console.WriteLine(countryService2.GetHashCode());
+
+                var someService1 = container.Resolve<ISomeService>();
+                Console.WriteLine(someService1.GetHashCode());
+                var someService2 = container.Resolve<ISomeService>();
+                Console.WriteLine(someService2.GetHashCode());
             }
-        }
-    }
-
-    interface ICountryService
-    {
-        List<string> GetCountriesList();
-    }
-
-    class CountryService : ICountryService
-    {
-        public List<string> GetCountriesList()
-        {
-            return new List<string>
+            catch (Exception ex)
             {
-                "Azerbaijan", "Russia"
-            };
+                Console.WriteLine();
+                Console.WriteLine("Error:");
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
